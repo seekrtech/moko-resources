@@ -24,15 +24,10 @@ kotlin {
     sourceSets {
         val commonMain by getting
         
+        // Note: iosMain is created by apple-main-convention plugin
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
-        
-        val iosMain by creating {
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
-        }
     }
     
     jvmToolchain(17)
