@@ -34,14 +34,6 @@ jobs:
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
 
-    - name: Publish moko-resources to GitHub Packages
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_ACTOR: ${{ github.actor }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
-        VERSION: ${{ github.event.inputs.version || github.ref_name }}
-      run: ./gradlew publishAllPublicationsToGitHubPackagesRepository
-
     - name: Publish resources-generator plugin to GitHub Packages
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -49,3 +41,11 @@ jobs:
         GITHUB_REPOSITORY: ${{ github.repository }}
         VERSION: ${{ github.event.inputs.version || github.ref_name }}
       run: ./gradlew -p resources-generator publishAllPublicationsToGitHubPackagesRepository
+
+    - name: Publish moko-resources to GitHub Packages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_ACTOR: ${{ github.actor }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        VERSION: ${{ github.event.inputs.version || github.ref_name }}
+      run: ./gradlew publishAllPublicationsToGitHubPackagesRepository
