@@ -25,29 +25,37 @@ android {
 }
 
 kotlin {
-    jvm()
+    // Configure only iOS and Android targets
     androidTarget()
     iosX64()
     iosArm64()
     iosSimulatorArm64()
-    macosX64()
-    macosArm64()
-    js(IR) {
-        browser()
-    }
 
     sourceSets {
-        commonMain {
+        val commonMain by getting {
             dependencies {
                 api(projects.resources)
                 api(compose.runtime)
                 api(compose.foundation)
             }
         }
-        androidMain {
+        
+        val androidMain by getting {
             dependencies {
                 api(libs.composeUi)
             }
         }
+        
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        
+        val iosMain by creating {
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
+        }
     }
+    
+    jvmToolchain(17)
 }

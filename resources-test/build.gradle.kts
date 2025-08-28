@@ -3,12 +3,39 @@
  */
 
 plugins {
-    id("multiplatform-library-extended-convention")
+    id("com.android.library")
+    id("org.jetbrains.kotlin.multiplatform")
+    id("android-base-convention")
+    id("dev.icerock.mobile.multiplatform.android-manifest")
     id("multiplatform-android-publish-convention")
     id("apple-main-convention")
     id("detekt-convention")
     id("javadoc-stub-convention")
     id("publication-convention")
+}
+
+kotlin {
+    // Configure only iOS and Android targets
+    androidTarget()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+    
+    sourceSets {
+        val commonMain by getting
+        
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        
+        val iosMain by creating {
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
+        }
+    }
+    
+    jvmToolchain(17)
 }
 
 android {
