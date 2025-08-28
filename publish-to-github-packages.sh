@@ -57,7 +57,7 @@ else
 fi
 
 print_info "Version: $VERSION"
-print_info "📦 Publishing modules: resources, resources-compose, resources-test"
+print_info "📦 Publishing modules: resources, resources-compose, resources-test, resources-generator"
 
 # Get GitHub token
 GITHUB_TOKEN=$(gh auth token)
@@ -70,8 +70,8 @@ export VERSION="$VERSION"
 
 print_info "Starting publication to GitHub Packages (Private)..."
 
-# Publish to GitHub Packages
-if ./gradlew publishAllPublicationsToGitHubPackagesRepository; then
+# Publish to GitHub Packages (including resources-generator plugin)
+if ./gradlew publishAllPublicationsToGitHubPackagesRepository && ./gradlew -p resources-generator publishAllPublicationsToGitHubPackagesRepository; then
     print_info "✅ Successfully published MOKO Resources to GitHub Packages!"
     print_info "📦 Your private package is now available at:"
     echo "  https://github.com/$GITHUB_REPOSITORY/packages"
@@ -91,6 +91,11 @@ if ./gradlew publishAllPublicationsToGitHubPackagesRepository; then
     echo "      implementation(\"dev.icerock.moko:resources:$VERSION\")"
     echo "      implementation(\"dev.icerock.moko:resources-compose:$VERSION\")"
     echo "      // implementation(\"dev.icerock.moko:resources-test:$VERSION\") // if needed for testing"
+    echo "  }"
+    echo ""
+    echo "  // For using the resources generator plugin:"
+    echo "  plugins {"
+    echo "      id(\"dev.icerock.mobile.multiplatform-resources\") version \"$VERSION\""
     echo "  }"
     print_info ""
     print_info "🔐 Remember: This package is private and requires GitHub authentication to access"

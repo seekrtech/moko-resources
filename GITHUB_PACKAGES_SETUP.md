@@ -113,14 +113,19 @@ dependencies {
     implementation("dev.icerock.moko:resources-compose:0.24.1-private") // if using Compose
     // testImplementation("dev.icerock.moko:resources-test:0.24.1-private") // if needed for testing
 }
+```
 
-// For projects using the resources generator plugin
+### 3. Add Plugin (if using the resources generator)
+
+```kotlin
 plugins {
     id("dev.icerock.mobile.multiplatform-resources") version "0.24.1-private"
 }
 ```
 
-### 3. GitHub Token Setup (Required for Private Packages)
+**Note**: The plugin will also be published to your private GitHub Packages alongside the libraries, allowing your STForestkit project to access all MOKO Resources components privately.
+
+### 4. GitHub Token Setup (Required for Private Packages)
 
 For consuming private packages, you'll need a GitHub Personal Access Token with `read:packages` permission:
 
