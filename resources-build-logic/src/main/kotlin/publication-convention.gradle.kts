@@ -9,12 +9,23 @@ plugins {
 }
 
 publishing {
-    repositories.maven("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        name = "OSSRH"
+    repositories {
+        maven("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+            name = "OSSRH"
 
-        credentials {
-            username = System.getenv("OSSRH_USER")
-            password = System.getenv("OSSRH_KEY")
+            credentials {
+                username = System.getenv("OSSRH_USER")
+                password = System.getenv("OSSRH_KEY")
+            }
+        }
+        
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/${System.getenv("GITHUB_REPOSITORY") ?: "YourUsername/YourRepositoryName"}")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR") ?: System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 
@@ -23,12 +34,12 @@ publishing {
         pom {
             name.set("MOKO resources")
             description.set("Resources access for Kotlin Multiplatform development (mobile first)")
-            url.set("https://github.com/icerockdev/moko-resources")
+            url.set("https://github.com/${System.getenv("GITHUB_REPOSITORY") ?: "icerockdev/moko-resources"}")
             licenses {
                 license {
                     name.set("Apache-2.0")
                     distribution.set("repo")
-                    url.set("https://github.com/icerockdev/moko-resources/blob/master/LICENSE.md")
+                    url.set("https://github.com/${System.getenv("GITHUB_REPOSITORY") ?: "icerockdev/moko-resources"}/blob/master/LICENSE.md")
                 }
             }
 
@@ -61,30 +72,35 @@ publishing {
             }
 
             scm {
-                connection.set("scm:git:ssh://github.com/icerockdev/moko-resources.git")
-                developerConnection.set("scm:git:ssh://github.com/icerockdev/moko-resources.git")
-                url.set("https://github.com/icerockdev/moko-resources")
+                connection.set("scm:git:ssh://github.com/${System.getenv("GITHUB_REPOSITORY") ?: "icerockdev/moko-resources"}.git")
+                developerConnection.set("scm:git:ssh://github.com/${System.getenv("GITHUB_REPOSITORY") ?: "icerockdev/moko-resources"}.git")
+                url.set("https://github.com/${System.getenv("GITHUB_REPOSITORY") ?: "icerockdev/moko-resources"}")
             }
         }
     }
 }
 
-val signingKeyId: String? = System.getenv("SIGNING_KEY_ID")
-if (signingKeyId != null) {
-    apply(plugin = "signing")
+apply(plugin = "signing")
 
-    configure<SigningExtension> {
-        val signingPassword: String? = System.getenv("SIGNING_PASSWORD")
-        val signingKey: String? = System.getenv("SIGNING_KEY")?.let { base64Key ->
-            String(Base64.getDecoder().decode(base64Key))
-        }
-
+configure<SigningExtension> {
+    val signingKeyId = System.getenv("SIGNING_KEY_ID")
+    val signingKey = System.getenv("SIGNING_KEY")?.let { base64Key ->
+        String(Base64.getDecoder().decode(base64Key))
+    }
+    val signingPassword = System.getenv("SIGNING_PASSWORD")
+    
+    if (signingKeyId != null && signingKey != null && signingPassword != null) {
         useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
         sign(publishing.publications)
     }
+}
 
-    val signingTasks = tasks.withType<Sign>()
-    tasks.withType<AbstractPublishToMaven>().configureEach {
-        dependsOn(signingTasks)
+// TODO: remove after https://youtrack.jetbrains.com/issue/KT-46466 is fixed
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    val hasSigningKeys = System.getenv("SIGNING_KEY_ID") != null &&
+                        System.getenv("SIGNING_KEY") != null &&
+                        System.getenv("SIGNING_PASSWORD") != null
+    if (hasSigningKeys) {
+        dependsOn(tasks.withType<Sign>())
     }
 }

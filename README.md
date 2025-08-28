@@ -932,6 +932,63 @@ To check your changes before pull request run:
 ./local-samples-check.sh
 ```
 
+## Private GitHub Packages Publishing
+
+This fork includes setup for publishing to private GitHub Packages, allowing you to distribute your customized version of moko-resources privately to your team or organization.
+
+### Publishing to GitHub Packages
+
+#### Quick Setup
+
+1. **Automatic Publishing (Recommended)**: Create a release tag and push:
+   ```bash
+   git tag v0.24.5-private
+   git push origin v0.24.5-private
+   ```
+
+2. **Manual Publishing**: Use the provided script:
+   ```bash
+   ./publish-to-github-packages.sh 0.24.5-private
+   ```
+
+#### Using Private Packages
+
+Add the private repository to your `settings.gradle.kts`:
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.github.com/YourUsername/moko-resources")
+            credentials {
+                username = "YourGitHubUsername"
+                password = "your_github_token_here"
+            }
+        }
+        mavenCentral()
+    }
+}
+```
+
+Then use the private version in your dependencies:
+
+```kotlin
+dependencies {
+    commonMainApi("dev.icerock.moko:resources:0.24.5-private")
+    commonMainApi("dev.icerock.moko:resources-compose:0.24.5-private")
+    commonTestImplementation("dev.icerock.moko:resources-test:0.24.5-private")
+}
+
+// In buildscript
+buildscript {
+    dependencies {
+        classpath("dev.icerock.moko:resources-generator:0.24.5-private")
+    }
+}
+```
+
+For detailed setup instructions, troubleshooting, and advanced configuration, see [GITHUB_PACKAGES_SETUP.md](GITHUB_PACKAGES_SETUP.md).
+
 ## Contributing
 
 All development (both new features and bug fixes) is performed in the `develop` branch. This
