@@ -80,16 +80,16 @@ publishing {
     }
 }
 
-apply(plugin = "signing")
+val signingKeyId = System.getenv("SIGNING_KEY_ID")
+val signingKey = System.getenv("SIGNING_KEY")?.let { base64Key ->
+    String(Base64.getDecoder().decode(base64Key))
+}
+val signingPassword = System.getenv("SIGNING_PASSWORD")
 
-configure<SigningExtension> {
-    val signingKeyId = System.getenv("SIGNING_KEY_ID")
-    val signingKey = System.getenv("SIGNING_KEY")?.let { base64Key ->
-        String(Base64.getDecoder().decode(base64Key))
-    }
-    val signingPassword = System.getenv("SIGNING_PASSWORD")
+if (signingKeyId != null && signingKey != null && signingPassword != null) {
+    apply(plugin = "signing")
     
-    if (signingKeyId != null && signingKey != null && signingPassword != null) {
+    configure<SigningExtension> {
         useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
         sign(publishing.publications)
     }
