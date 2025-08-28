@@ -53,15 +53,15 @@ If you prefer to publish from your local machine:
 
 ### What Gets Published
 
-**All MOKO Resources modules** are configured for publishing with these targets (optimized for mobile development):
+**All MOKO Resources modules** are configured for publishing with these targets:
 - **resources**: Core MOKO Resources library
-  - Android, iOS (arm64, x64, simulatorArm64)
+  - Android, iOS (arm64, x64, simulatorArm64), macOS (arm64, x64), JVM, JS
 - **resources-compose**: Compose integration for MOKO Resources
-  - Android, iOS (arm64, x64, simulatorArm64)
+  - Android, iOS (arm64, x64, simulatorArm64), macOS (arm64, x64), JVM, JS
 - **resources-test**: Testing utilities for MOKO Resources
-  - Android, iOS (arm64, x64, simulatorArm64)
+  - Android, iOS (arm64, x64, simulatorArm64), macOS (arm64, x64), JVM, JS
 - **resources-generator**: Gradle plugin for resource generation
-  - JVM (plugin supports all platforms when applied to projects)
+  - JVM
 
 ### Environment Variables
 

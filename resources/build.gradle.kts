@@ -3,10 +3,7 @@
  */
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.multiplatform")
-    id("android-base-convention")
-    id("dev.icerock.mobile.multiplatform.android-manifest")
+    id("multiplatform-library-extended-convention")
     id("multiplatform-android-publish-convention")
     id("apple-main-convention")
     id("apple-bundle-searcher-convention")
@@ -16,27 +13,19 @@ plugins {
 }
 
 kotlin {
-    // Configure only iOS and Android targets
-    androidTarget()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    
     sourceSets {
-        val commonMain by getting
-        
-        // Note: iosMain and iosTest are created by apple-main-convention plugin
-        // We just need to configure the target dependencies
-        val iosX64Main by getting
-        val iosArm64Main by getting  
-        val iosSimulatorArm64Main by getting
-        
-        val iosX64Test by getting
-        val iosArm64Test by getting
-        val iosSimulatorArm64Test by getting
+        getByName("jsMain") {
+            dependencies {
+                api(npm("bcp-47", "2.1.0"))
+                api(npm("@messageformat/core", "3.1.0"))
+                api(npm("mini-css-extract-plugin", "2.7.5"))
+                api(npm("css-loader", "6.7.3"))
+                api(npm("style-loader", "3.3.2"))
+
+                implementation(libs.kotlinxCoroutines)
+            }
+        }
     }
-    
-    jvmToolchain(17)
 }
 
 android {
@@ -45,7 +34,13 @@ android {
 
 dependencies {
     commonMainApi(libs.mokoGraphics)
+
+    jvmMainImplementation(libs.icu4j)
+    jvmMainImplementation(libs.batikRasterizer)
+    jvmMainImplementation(libs.batikTranscoder)
+
     androidMainImplementation(libs.appCompatResources)
+
     iosTestImplementation(libs.mokoTestCore)
 }
 
