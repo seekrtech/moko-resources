@@ -17,6 +17,12 @@ plugins {
 group = "dev.icerock.moko"
 version = System.getenv("VERSION") ?: moko.versions.resourcesVersion.get()
 
+configurations.all {
+    resolutionStrategy {
+        force("org.jetbrains.kotlin:kotlin-compiler-embeddable:${libs.versions.kotlinVersion.get()}")
+    }
+}
+
 dependencies {
     implementation(gradleKotlinDsl())
     compileOnly(libs.kotlinGradlePlugin)
@@ -46,7 +52,7 @@ kotlin {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>()
     .configureEach {
         compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
-        compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_2_0)
+        compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_2_2)
     }
 
 gradlePlugin {

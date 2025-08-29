@@ -43,8 +43,7 @@ fi
 
 # Get GitHub username and repository info
 GITHUB_USER=$(gh api user --jq .login)
-GITHUB_REPO=$(basename "$(git config --get remote.origin.url)" .git)
-GITHUB_REPOSITORY="$GITHUB_USER/$GITHUB_REPO"
+GITHUB_REPOSITORY="seekrtech/moko-resources"
 
 print_info "Publishing to private repository: $GITHUB_REPOSITORY"
 
